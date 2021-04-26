@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Keopi</string>
+
+    <string-array name="ages">
+        <item>All</item>
+        <item>&lt; 22</item>
+        <item>22 - 35</item>
+        <item>&gt; 35</item>
+    </string-array>
+
+    <string-array name="table_capacity">
+        <item>All</item>
+        <item>&lt; 50</item>
+        <item>50 - 100</item>
+        <item>&gt; 100</item>
+    </string-array>
+
+    <string-array name="pisme">
+        <item>All</item>
+        <item>Narodne</item>
+        <item>Cajke</item>
+    </string-array>
+
+    <string-array name="terrace">
+        <item>All</item>
+        <item>Terasa</item>
+        <item>Nema terasu</item>
+    </string-array>
+</resources>

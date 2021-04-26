@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "650909989066",
+    "project_id": "keopi-8467e",
+    "storage_bucket": "keopi-8467e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650909989066:android:10b74c6de88145a5431c33",
+        "android_client_info": {
+          "package_name": "com.techpuzzle.keopi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650909989066-cauib33tvmoart7uunt8tuvf52r0533h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtjU_xqLmtVE74jWOge8k_RPgKFH1vyc0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650909989066-cauib33tvmoart7uunt8tuvf52r0533h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

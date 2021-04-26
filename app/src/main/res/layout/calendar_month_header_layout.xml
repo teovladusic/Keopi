@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_background">
+
+
+    <TextView
+        android:id="@+id/tv_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/raleway"
+        android:textColor="@color/yellow"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tvPon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Veljaca" />
+
+    <TextView
+        android:id="@+id/tv_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/raleway_light"
+        android:text="2021"
+        android:textColor="@color/gray_text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_month"
+        app:layout_constraintStart_toEndOf="@id/tv_month" />
+
+    <TextView
+        android:id="@+id/tvPon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Mon"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvUto"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_month" />
+
+    <TextView
+        android:id="@+id/tvUto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Tue"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvSri"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvPon"
+        app:layout_constraintTop_toTopOf="@id/tvPon" />
+
+    <TextView
+        android:id="@+id/tvSri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Wed"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvCet"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvUto"
+        app:layout_constraintTop_toTopOf="@+id/tvUto" />
+
+    <TextView
+        android:id="@+id/tvCet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Thu"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvPet"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvSri"
+        app:layout_constraintTop_toTopOf="@+id/tvSri" />
+
+    <TextView
+        android:id="@+id/tvPet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Fri"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvSub"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvCet"
+        app:layout_constraintTop_toTopOf="@+id/tvCet" />
+
+    <TextView
+        android:id="@+id/tvSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Sat"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvNed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvPet"
+        app:layout_constraintTop_toTopOf="@+id/tvPet" />
+
+    <TextView
+        android:id="@+id/tvNed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/raleway"
+        android:text="Sun"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvSub"
+        app:layout_constraintTop_toTopOf="@+id/tvSub" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

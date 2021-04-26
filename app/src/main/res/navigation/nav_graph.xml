@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/cafesFragment">
+
+    <fragment
+        android:id="@+id/cafesFragment"
+        android:name="com.techpuzzle.keopi.ui.caffebars.CafeBarsFragment"
+        android:label="fragment_cafes"
+        tools:layout="@layout/fragment_cafebars" >
+
+        <action
+            android:id="@+id/action_cafesFragment_to_cafeBarFragment"
+            app:destination="@id/cafeBarFragment"
+            app:enterAnim="@anim/transition_from_right"
+            app:exitAnim="@anim/transition_to_left" />
+        <action
+            android:id="@+id/action_caffesFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment"
+            app:enterAnim="@anim/transition_from_bottom"
+            app:exitAnim="@anim/transition_to_top" />
+    </fragment>
+    <fragment
+        android:id="@+id/cachedCafeBarsFragment"
+        android:name="com.techpuzzle.keopi.ui.caffebars.cachedcafebars.CachedCafeBarsFragment"
+        android:label="fragment_cached_cafe_bars"
+        tools:layout="@layout/fragment_cached_cafe_bars" />
+    <fragment
+        android:id="@+id/allCafeBarsFragment"
+        android:name="com.techpuzzle.keopi.ui.caffebars.allcafebars.AllCafeBarsFragment"
+        android:label="fragment_all_cafe_bars"
+        tools:layout="@layout/fragment_all_cafe_bars" />
+    <fragment
+        android:id="@+id/cafeBarFragment"
+        android:name="com.techpuzzle.keopi.ui.cafebar.CafeBarFragment"
+        android:label="fragment_cafe_bar"
+        tools:layout="@layout/fragment_cafe_bar" >
+        <argument
+            android:name="cafeBar"
+            app:argType="com.techpuzzle.keopi.data.entities.CafeBar" />
+        <action
+            android:id="@+id/action_cafeBarFragment_to_expandedViewPagerFragment"
+            app:destination="@id/expandedViewPagerFragment" />
+        <action
+            android:id="@+id/action_cafeBarFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment"
+            app:enterAnim="@anim/transition_from_bottom"
+            app:exitAnim="@anim/transition_to_top" />
+        <argument
+            android:name="position"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_cafeBarFragment_to_caffesFragment"
+            app:destination="@id/cafesFragment"
+            app:enterAnim="@anim/transition_from_left"
+            app:exitAnim="@anim/transition_to_right" />
+        <action
+            android:id="@+id/action_cafeBarFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <argument
+            android:name="imageUrls"
+            app:argType="string[]"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/expandedViewPagerFragment"
+        android:name="com.techpuzzle.keopi.ui.cafebar.expandedviewpager.ExpandedViewPagerFragment"
+        android:label="fragment_expanded_view_pager"
+        tools:layout="@layout/fragment_expanded_view_pager" >
+        <argument
+            android:name="imageUrls"
+            app:argType="string[]" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_expandedViewPagerFragment_to_cafeBarFragment"
+            app:destination="@id/cafeBarFragment" />
+        <argument
+            android:name="cafeBar"
+            app:argType="com.techpuzzle.keopi.data.entities.CafeBar" />
+    </fragment>
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.techpuzzle.keopi.ui.calendar.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_calendarFragment_to_caffesFragment"
+            app:destination="@id/cafesFragment"
+            app:enterAnim="@anim/transition_from_top"
+            app:exitAnim="@anim/transition_to_bottom" />
+        <action
+            android:id="@+id/action_calendarFragment_to_cafeBarFragment"
+            app:destination="@id/cafeBarFragment"
+            app:enterAnim="@anim/transition_from_top"
+            app:exitAnim="@anim/transition_to_bottom" />
+        <argument
+            android:name="cafeBar"
+            app:argType="com.techpuzzle.keopi.data.entities.CafeBar"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="com.techpuzzle.keopi.ui.order.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" >
+        <argument
+            android:name="cafeBar"
+            app:argType="com.techpuzzle.keopi.data.entities.CafeBar" />
+        <action
+            android:id="@+id/action_orderFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.techpuzzle.keopi.ui.checkout.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" >
+        <argument
+            android:name="selectedDrinks"
+            app:argType="com.techpuzzle.keopi.data.entities.Drink[]" />
+    </fragment>
+
+
+</navigation>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="7dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view_image"
+            android:layout_width="130dp"
+            android:layout_height="110dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <TextView
+            android:id="@+id/tv_caffe_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/raleway_semibold"
+            android:text="Caffe Bar"
+            android:textColor="@color/gray_text"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/card_view_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/horizontal_view"
+            android:layout_width="50dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/yellow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/card_view_image"
+            app:layout_constraintTop_toBottomOf="@id/tv_caffe_name" />
+
+        <ImageView
+            android:id="@+id/img_view_location"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_location"
+            app:layout_constraintStart_toEndOf="@id/card_view_image"
+            app:layout_constraintTop_toBottomOf="@id/horizontal_view" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/raleway_light"
+            android:text="K.Kambelovac"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/img_view_location"
+            app:layout_constraintStart_toEndOf="@id/img_view_location"
+            app:layout_constraintTop_toTopOf="@id/img_view_location" />
+
+        <ImageView
+            android:id="@+id/img_view_clock"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_clock"
+            app:layout_constraintEnd_toEndOf="@id/img_view_location"
+            app:layout_constraintStart_toStartOf="@id/img_view_location"
+            app:layout_constraintTop_toBottomOf="@id/img_view_location" />
+
+        <TextView
+            android:id="@+id/tv_working_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/raleway_light"
+            android:text="7:00 - 23:00"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/img_view_clock"
+            app:layout_constraintStart_toEndOf="@id/img_view_clock"
+            app:layout_constraintTop_toTopOf="@id/img_view_clock" />
+
+        <TextView
+            android:id="@+id/tv_tables"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="@font/raleway_light"
+            android:text="20"
+            android:textColor="@color/yellow"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_working_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_working_time" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_table"
+            app:layout_constraintBottom_toBottomOf="@id/img_view_clock"
+            app:layout_constraintEnd_toStartOf="@id/tv_tables"
+            app:layout_constraintTop_toTopOf="@id/img_view_clock" />
+
+        <ImageView
+            android:id="@+id/img_view_add_remove_bar"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_add_shape"
+            android:src="@drawable/ic_add"
+            android:translationZ="90dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
+
+
+
+
+
+

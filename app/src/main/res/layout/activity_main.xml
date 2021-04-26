@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.MainActivity">
+
+    <TextView
+        android:id="@+id/tv_no_internet_connection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#A4A1A1"
+        android:text="Niste povezani"
+        android:textAlignment="center"
+        android:textColor="@color/yellow"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="16sp"
+        android:translationZ="90dp"
+        android:visibility="gone" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
