@@ -1,23 +1,19 @@
 package com.techpuzzle.keopi.di
 
+import android.app.Application
 import androidx.room.Room
+import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarRepository
+import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsRepository
+import com.techpuzzle.keopi.data.repositiories.calendar.CalendarDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.calendar.CalendarRepository
 import com.techpuzzle.keopi.data.room.KeopiDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import android.app.Application
-import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarRepository
-import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarDefaultRepository
-import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsDefaultRepository
-import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsRepository
-import com.techpuzzle.keopi.data.repositiories.calendar.CalendarDefaultRepository
-import com.techpuzzle.keopi.data.repositiories.calendar.CalendarRepository
-import com.techpuzzle.keopi.data.repositiories.checkout.CheckoutDefaultRepository
-import com.techpuzzle.keopi.data.repositiories.checkout.CheckoutRepository
-import com.techpuzzle.keopi.data.repositiories.order.OrderDefaultRepository
-import com.techpuzzle.keopi.data.repositiories.order.OrderRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -49,12 +45,4 @@ object AppModule {
     @Singleton
     @Provides
     fun provideCalendarRepository() = CalendarDefaultRepository() as CalendarRepository
-
-    @Singleton
-    @Provides
-    fun provideOrderRepository() = OrderDefaultRepository() as OrderRepository
-
-    @Singleton
-    @Provides
-    fun provideCheckoutRepository() = CheckoutDefaultRepository() as CheckoutRepository
 }

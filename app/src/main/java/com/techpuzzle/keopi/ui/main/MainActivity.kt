@@ -1,33 +1,23 @@
 package com.techpuzzle.keopi.ui.main
 
-import android.app.Activity
 import android.content.Intent
-import com.techpuzzle.keopi.utils.connection.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.viewModels
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import com.google.android.gms.location.LocationRequest
-import com.google.firebase.messaging.FirebaseMessaging
 import com.techpuzzle.keopi.R
 import com.techpuzzle.keopi.data.entities.CafeBar
 import com.techpuzzle.keopi.databinding.ActivityMainBinding
 import com.techpuzzle.keopi.keopiApp
 import com.techpuzzle.keopi.ui.caffebars.CafeBarsFragmentDirections
-import com.techpuzzle.keopi.ui.caffebars.CafeBarsViewModel
-import com.techpuzzle.keopi.utils.Constants.Companion.ACTION_SHOW_CAFE_BAR_FRAGMENT
+import com.techpuzzle.keopi.utils.connection.ConnectivityManager
 import dagger.hilt.android.AndroidEntryPoint
-import io.realm.Realm
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
 import io.realm.mongodb.Credentials
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint

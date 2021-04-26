@@ -1,5 +1,6 @@
 package com.techpuzzle.keopi.services
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
@@ -19,11 +20,9 @@ import com.techpuzzle.keopi.ui.main.MainActivity
 import com.techpuzzle.keopi.utils.Constants.Companion.FIREBASE_NOTIFICATIONS_CHANNEL_ID
 import kotlin.random.Random
 
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class FirebaseService : FirebaseMessagingService() {
 
-    override fun onNewToken(p0: String) {
-        super.onNewToken(p0)
-    }
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)

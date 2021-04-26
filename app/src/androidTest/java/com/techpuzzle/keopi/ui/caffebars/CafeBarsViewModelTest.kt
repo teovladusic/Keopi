@@ -1,6 +1,8 @@
 package com.techpuzzle.keopi.ui.caffebars
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
@@ -9,6 +11,7 @@ import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsFakeRepository
 import com.techpuzzle.keopi.getOrAwaitValue
 import com.techpuzzle.keopi.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.bson.Document
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,7 +29,14 @@ class CafeBarsViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = CafeBarsViewModel(CafeBarsFakeRepository())
+        val savedStateHandle = SavedStateHandle()
+        val searchQuery = MutableLiveData("")
+        val matchQueries = MutableLiveData(emptyList<Document>())
+
+        savedStateHandle.set("searchQuery", searchQuery)
+        savedStateHandle.set("matchQueries", matchQueries)
+
+        viewModel = CafeBarsViewModel(CafeBarsFakeRepository(), savedStateHandle)
     }
 
 
@@ -118,16 +128,41 @@ class CafeBarsViewModelTest {
         val kvartPosition = 1
         viewModel.loadCities()
         viewModel.loadAreas(cityPosition)
-        viewModel.setFilerQuery("", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "", "")
+        viewModel.setFilerQuery(
+            "",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "",
+            ""
+        )
         val value = viewModel.isQueriedByArea.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setKvartQueryKvartPos0ReturnsFalse() {
         val cityPosition = 1
         val kvartPosition = 0
         viewModel.loadCities()
-        viewModel.setFilerQuery("", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "", "")
+        viewModel.setFilerQuery(
+            "",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "",
+            ""
+        )
         val value = viewModel.isQueriedByArea.getOrAwaitValue()
         assertThat(value).isFalse()
     }
@@ -137,7 +172,19 @@ class CafeBarsViewModelTest {
         val cityPosition = 1
         val kvartPosition = -1
         viewModel.loadCities()
-        viewModel.setFilerQuery("", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "", "")
+        viewModel.setFilerQuery(
+            "",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "",
+            ""
+        )
         val value = viewModel.isQueriedByArea.getOrAwaitValue()
         assertThat(value).isFalse()
     }
@@ -148,10 +195,23 @@ class CafeBarsViewModelTest {
         val kvartPosition = 0
         //function from fake repository returns 3 cities
         viewModel.loadCities()
-        viewModel.setFilerQuery("Sve", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "Sve", "Sve")
+        viewModel.setFilerQuery(
+            "Sve",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "Sve",
+            "Sve"
+        )
         val value = viewModel.isQueriedByCity.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setCityQueryCityPos1KvartPos1ReturnsFalse() {
         val cityPosition = 1
@@ -159,17 +219,42 @@ class CafeBarsViewModelTest {
         //function from fake repository returns 3 cities
         viewModel.loadCities()
         viewModel.loadAreas(cityPosition)
-        viewModel.setFilerQuery("", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "", "")
+        viewModel.setFilerQuery(
+            "",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "",
+            ""
+        )
         val value = viewModel.isQueriedByCity.getOrAwaitValue()
         assertThat(value).isFalse()
     }
+
     @Test
     fun setCityQueryCityPos0KvartPos0ReturnsFalse() {
         val cityPosition = 0
         val kvartPosition = 0
         //function from fake repository returns 3 cities
         viewModel.loadCities()
-        viewModel.setFilerQuery("", "Od", "Sve", false, false, false, false, cityPosition, kvartPosition, "", "")
+        viewModel.setFilerQuery(
+            "",
+            "Od",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            cityPosition,
+            kvartPosition,
+            "",
+            ""
+        )
         val value = viewModel.isQueriedByCity.getOrAwaitValue()
         assertThat(value).isFalse()
     }
@@ -187,6 +272,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedByWorkingTime.getOrAwaitValue()
         assertThat(value).isFalse()
     }
+
     @Test
     fun setFromUntilQueryFromUntilTrueTimeTrueTimeNotInScopeWorkingUntilReturnsFalse() {
         viewModel.setFilerQuery("", "Do", "16:00", false, false, false, false, 0, 0, "", "")
@@ -200,12 +286,14 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedByWorkingTime.getOrAwaitValue()
         assertThat(value).isFalse()
     }
+
     @Test
     fun setFromUntilQueryFromUntilFalseTimeTrueReturnsFalse() {
         viewModel.setFilerQuery("", "Sve", "15:00", false, false, false, false, 0, 0, "", "")
         val value = viewModel.isQueriedByWorkingTime.getOrAwaitValue()
         assertThat(value).isFalse()
     }
+
     @Test
     fun setFromUntilQueryFromUntilFalseTimeFalseReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -219,6 +307,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedByAge.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setAgeQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "")
@@ -228,10 +317,23 @@ class CafeBarsViewModelTest {
 
     @Test
     fun setCapacityQueryReturnsTrue() {
-        viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "< 50")
+        viewModel.setFilerQuery(
+            "Sve",
+            "Sve",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            0,
+            0,
+            "Sve",
+            "< 50"
+        )
         val value = viewModel.isQueriedByPeopleCapacity.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setCapacityQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -241,10 +343,23 @@ class CafeBarsViewModelTest {
 
     @Test
     fun setMusicQueryReturnsTrue() {
-        viewModel.setFilerQuery("Cajke", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
+        viewModel.setFilerQuery(
+            "Cajke",
+            "Sve",
+            "Sve",
+            false,
+            false,
+            false,
+            false,
+            0,
+            0,
+            "Sve",
+            "Sve"
+        )
         val value = viewModel.isQueriedByMusic.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setMusicQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -258,6 +373,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedBySmoking.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setSmokingQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -271,6 +387,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedByDart.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setDartQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -284,6 +401,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedBySlotMachine.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setSlotMachineQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -297,6 +415,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.isQueriedByBilliard.getOrAwaitValue()
         assertThat(value).isTrue()
     }
+
     @Test
     fun setBilliardQueryReturnsFalse() {
         viewModel.setFilerQuery("Sve", "Sve", "Sve", false, false, false, false, 0, 0, "Sve", "Sve")
@@ -318,12 +437,14 @@ class CafeBarsViewModelTest {
         val value = viewModel.loadAreaStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
+
     @Test
     fun loadKvartoviNoCitiesReturnsError() {
         viewModel.loadAreas(1)
         val value = viewModel.loadAreaStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.ERROR)
     }
+
     @Test
     fun loadKvartoviCitiesPositionLessThan0ReturnsError() {
         viewModel.loadCities()
@@ -340,6 +461,7 @@ class CafeBarsViewModelTest {
         val shouldReturn = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7, 8)
         assertThat(workingHours).isEqualTo(shouldReturn)
     }
+
     @Test
     fun getWorkingHoursFromTimeNotInScopeReturnsFalse() {
         val fromUntil = "Od"
@@ -357,6 +479,7 @@ class CafeBarsViewModelTest {
         val shouldReturn = mutableListOf(22, 23, 0, 1, 2, 3, 4)
         assertThat(workingHours).isEqualTo(shouldReturn)
     }
+
     @Test
     fun getWorkingHoursUntilTimeNotInScopeReturnsListOf() {
         val fromUntil = "Do"
@@ -376,8 +499,33 @@ class CafeBarsViewModelTest {
     @Test
     fun getHours() {
         val hours = viewModel.getHours()
-        val shouldReturn = mutableListOf("Sve", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
-            "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00")
+        val shouldReturn = mutableListOf(
+            "Sve",
+            "00:00",
+            "01:00",
+            "02:00",
+            "03:00",
+            "04:00",
+            "05:00",
+            "06:00",
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00"
+        )
         assertThat(hours).isEqualTo(shouldReturn)
     }
 
@@ -388,6 +536,7 @@ class CafeBarsViewModelTest {
         val value = viewModel.onCafeBarClickStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
+
     @Test
     fun onCafeBarClickWithInvalidIdReturnsError() {
         val caffeBar = CafeBar()

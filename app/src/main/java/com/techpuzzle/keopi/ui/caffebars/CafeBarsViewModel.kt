@@ -5,9 +5,9 @@ import androidx.lifecycle.*
 import androidx.paging.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.messaging.FirebaseMessaging
+import com.techpuzzle.keopi.data.entities.Area
 import com.techpuzzle.keopi.data.entities.CafeBar
 import com.techpuzzle.keopi.data.entities.City
-import com.techpuzzle.keopi.data.entities.Area
 import com.techpuzzle.keopi.data.paging.CafesPagingSource
 import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsRepository
 import com.techpuzzle.keopi.utils.Event
@@ -18,13 +18,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import org.bson.Document
 import java.io.IOException
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class CafeBarsViewModel @Inject constructor(
     private val repository: CafeBarsRepository,
-    private val state: SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     private val TAG = "CafeBarsViewModel"
@@ -42,9 +41,6 @@ class CafeBarsViewModel @Inject constructor(
 
     private var _getPromoBarsStatus = MutableLiveData<Event<Resource<List<CafeBar>>>>()
     val getPromoBarsStatus: LiveData<Event<Resource<List<CafeBar>>>> = _getPromoBarsStatus
-
-
-
 
     fun loadPromoBars() = viewModelScope.launch {
         val promoBars = repository.getPromoBars() ?: emptyList()
@@ -184,7 +180,7 @@ class CafeBarsViewModel @Inject constructor(
 
     val arrayOdDo = arrayOf("All", "From", "Until")
 
-    var mSongType = "All"
+    private var mSongType = "All"
     var mCanSmoke = false
     var mHasDart = false
     var mHasSlotMachine = false

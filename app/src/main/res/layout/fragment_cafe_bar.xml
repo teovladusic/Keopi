@@ -406,7 +406,7 @@ enim ad minim veniam, quis nostrud exercitation ullamco"
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_order"
+        android:id="@+id/btn_take_to_cafe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
@@ -428,7 +428,7 @@ enim ad minim veniam, quis nostrud exercitation ullamco"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btn_order"
+        app:layout_constraintBottom_toTopOf="@id/btn_take_to_cafe"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

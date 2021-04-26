@@ -1,9 +1,6 @@
 package com.techpuzzle.keopi.ui.cafebar
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
 import com.techpuzzle.keopi.data.entities.CafeBar
 import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarRepository
 import com.techpuzzle.keopi.utils.Event
@@ -17,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CafeBarViewModel @Inject constructor(
-    private val state: SavedStateHandle,
+    state: SavedStateHandle,
     private val repository: CafeBarRepository
 ) : ViewModel() {
 
@@ -58,22 +55,6 @@ class CafeBarViewModel @Inject constructor(
     private val _insertCafeBarStatus = MutableLiveData<Event<Resource<CafeBar>>>()
     val insertCafeBarStatus: LiveData<Event<Resource<CafeBar>>> = _insertCafeBarStatus
 
-    /** TESTIRAJ **/
-    fun verifyLocation(latitude: Double, longitude: Double) = viewModelScope.launch {
-        Log.d(TAG, "user $latitude $longitude ")
-        val userLatLng = LatLng(latitude, longitude)
-        val cafeBarLatLng = LatLng(cafeBar.latitude.toDouble(), cafeBar.longitude.toDouble())
-        val distance = SphericalUtil.computeDistanceBetween(userLatLng, cafeBarLatLng)
-        Log.d(TAG, "$distance")
-        //TODO: OKRENI ZNAK JEDNAKOSTI OVO SAN STAVIA SAMO DA MOGU UC U KAFIC
-        if (distance > 30) {
-            Log.d(TAG, "pusti ga da naruci")
-            cafeBarEventsChannel.send(CafeBarEvents.NavigateToOrderScreen(cafeBar))
-        } else {
-            cafeBarEventsChannel.send(CafeBarEvents.SendMessage("Trebate biti u kaficu (ukoliko jeste, pokusajte ponovno)"))
-        }
-    }
-
     fun onAddClicked(cafeBar: CafeBar) = viewModelScope.launch {
         if (cafeBar._id.isEmpty()) {
             _insertCafeBarStatus.postValue(
@@ -93,6 +74,5 @@ class CafeBarViewModel @Inject constructor(
 
     sealed class CafeBarEvents {
         data class SendMessage(val message: String) : CafeBarEvents()
-        data class NavigateToOrderScreen(val cafeBar: CafeBar) : CafeBarEvents()
     }
 }

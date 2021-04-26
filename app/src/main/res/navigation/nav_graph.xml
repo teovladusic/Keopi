@@ -57,9 +57,6 @@
             app:destination="@id/cafesFragment"
             app:enterAnim="@anim/transition_from_left"
             app:exitAnim="@anim/transition_to_right" />
-        <action
-            android:id="@+id/action_cafeBarFragment_to_orderFragment"
-            app:destination="@id/orderFragment" />
         <argument
             android:name="imageUrls"
             app:argType="string[]"
@@ -104,27 +101,6 @@
             app:argType="com.techpuzzle.keopi.data.entities.CafeBar"
             app:nullable="true"
             android:defaultValue="@null" />
-    </fragment>
-    <fragment
-        android:id="@+id/orderFragment"
-        android:name="com.techpuzzle.keopi.ui.order.OrderFragment"
-        android:label="fragment_order"
-        tools:layout="@layout/fragment_order" >
-        <argument
-            android:name="cafeBar"
-            app:argType="com.techpuzzle.keopi.data.entities.CafeBar" />
-        <action
-            android:id="@+id/action_orderFragment_to_checkoutFragment"
-            app:destination="@id/checkoutFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/checkoutFragment"
-        android:name="com.techpuzzle.keopi.ui.checkout.CheckoutFragment"
-        android:label="fragment_checkout"
-        tools:layout="@layout/fragment_checkout" >
-        <argument
-            android:name="selectedDrinks"
-            app:argType="com.techpuzzle.keopi.data.entities.Drink[]" />
     </fragment>
 
 

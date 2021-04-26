@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpandedViewPagerViewModel @Inject constructor(
-    private val state: SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     val imageUrls = state.get<Array<String>>("imageUrls")!!.toList()
