@@ -1,24 +1,25 @@
 package com.techpuzzle.keopi.ui.caffebars
 
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.messaging.FirebaseMessaging
 import com.techpuzzle.keopi.data.entities.Area
 import com.techpuzzle.keopi.data.entities.CafeBar
+import com.techpuzzle.keopi.data.entities.CafeParams
 import com.techpuzzle.keopi.data.entities.City
 import com.techpuzzle.keopi.data.paging.CafesPagingSource
 import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsRepository
 import com.techpuzzle.keopi.utils.Event
 import com.techpuzzle.keopi.utils.Resource
+import com.techpuzzle.keopi.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import org.bson.Document
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class CafeBarsViewModel @Inject constructor(
@@ -34,8 +35,8 @@ class CafeBarsViewModel @Inject constructor(
     val searchQueryLiveData = state.getLiveData("searchQuery", "")
     private val searchQuery = searchQueryLiveData.asFlow()
 
-   private val matchQueriesLiveData = state.getLiveData("matchQueries", emptyList<Document>())
-   private val matchQueries = matchQueriesLiveData.asFlow()
+    private val cafeParamsLiveData = state.getLiveData("cafeParams", CafeParams())
+    private val cafeParams = cafeParamsLiveData.asFlow()
 
     val promoCafeBarsFlow = MutableStateFlow(listOf<CafeBar>())
 
@@ -43,42 +44,28 @@ class CafeBarsViewModel @Inject constructor(
     val getPromoBarsStatus: LiveData<Event<Resource<List<CafeBar>>>> = _getPromoBarsStatus
 
     fun loadPromoBars() = viewModelScope.launch {
-        val promoBars = repository.getPromoBars() ?: emptyList()
-        if (promoBars.size == 3) {
-            promoCafeBarsFlow.value = promoBars
-            _getPromoBarsStatus.postValue(Event(Resource.success(promoBars)))
+        val promoBars = repository.getPromoBars()
+        if (promoBars.status == Status.SUCCESS) {
+            promoCafeBarsFlow.value = promoBars.data!!
         } else {
-            _getPromoBarsStatus.postValue(
-                Event(
-                    Resource.error(
-                        "Didnt received 3 cafe bars",
-                        promoBars
-                    )
-                )
-            )
+            promoCafeBarsFlow.value = emptyList()
         }
+        _getPromoBarsStatus.postValue(Event(promoBars))
     }
 
     var lastCafeBars: PagingData<CafeBar>? = null
-    private var lastMatchQuery = emptyList<Document>()
-    private var lastSearchQuery = ""
 
     @ExperimentalCoroutinesApi
     val cafeBarsFlow = combine(
-        matchQueries,
+        cafeParams,
         searchQuery
-    ) { matchQueries, searchQuery ->
-        Pair(matchQueries, searchQuery)
-    }.flatMapLatest { (matchQueries, searchQuery) ->
-        if (lastCafeBars != null && lastMatchQuery == matchQueries && lastSearchQuery == searchQuery) {
-            flowOf(lastCafeBars)
-        } else {
-            lastSearchQuery = searchQuery
-            lastMatchQuery = matchQueries
-            withContext(Dispatchers.IO) {
-                getSearchResults(matchQueries, searchQuery)
-                    .cachedIn(viewModelScope)
-            }
+    ) { cafeParams, searchQuery ->
+        Pair(cafeParams, searchQuery)
+    }.flatMapLatest { (cafeParams, searchQuery) ->
+        withContext(Dispatchers.IO) {
+            cafeParams.name = searchQuery
+            getSearchResults(cafeParams)
+                .cachedIn(viewModelScope)
         }
     }
 
@@ -90,16 +77,73 @@ class CafeBarsViewModel @Inject constructor(
         searchQueryLiveData.postValue(realQuery)
     }
 
-    private fun getSearchResults(
-        matchQueries: List<Document>,
-        searchQuery: String
-    ): Flow<PagingData<CafeBar>> {
+    private fun getSearchResults(cafeParams: CafeParams): Flow<PagingData<CafeBar>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 5,
             ),
-            pagingSourceFactory = { CafesPagingSource(searchQuery, matchQueries) }
+            pagingSourceFactory = { CafesPagingSource(createCafeParamsMap(cafeParams)) }
         ).flow
+    }
+
+    private val seed = Random.nextInt(0, 1000).toString()
+    private fun createCafeParamsMap(cafeParams: CafeParams): MutableMap<String, String> {
+        val mapToReturn = mutableMapOf<String, String>()
+
+        if (cafeParams.billiards != null) {
+            mapToReturn["billiards"] = cafeParams.billiards!!.toString()
+        }
+        if (cafeParams.cityId != null) {
+            mapToReturn["cityId"] = cafeParams.cityId!!
+        }
+        if (cafeParams.name != null) {
+            mapToReturn["name"] = cafeParams.name!!
+        }
+        if (cafeParams.capacity != null) {
+            mapToReturn["capacity"] = cafeParams.capacity!!
+        }
+        if (cafeParams.betting != null) {
+            mapToReturn["betting"] = cafeParams.betting!!.toString()
+        }
+        if (cafeParams.areaId != null) {
+            mapToReturn["areaId"] = cafeParams.areaId!!
+        }
+        if (cafeParams.location != null) {
+            mapToReturn["location"] = cafeParams.location!!
+        }
+        if (cafeParams.music != null) {
+            mapToReturn["music"] = cafeParams.music!!
+        }
+        if (cafeParams.dart != null) {
+            mapToReturn["dart"] = cafeParams.dart!!.toString()
+        }
+        if (cafeParams.startingWorkTime != null) {
+            mapToReturn["startingWorkTime"] = cafeParams.startingWorkTime!!.toString()
+        }
+        if (cafeParams.age != null) {
+            mapToReturn["age"] = cafeParams.age!!
+        }
+        if (cafeParams.smoking != null) {
+            mapToReturn["smoking"] = cafeParams.smoking!!.toString()
+        }
+        if (cafeParams.endingWorkTime != null) {
+            mapToReturn["endingWorkTime"] = cafeParams.endingWorkTime!!.toString()
+        }
+        if (cafeParams.terrace != null) {
+            mapToReturn["terrace"] = cafeParams.terrace!!.toString()
+        }
+        if (cafeParams.hookah != null) {
+            mapToReturn["hookah"] = cafeParams.hookah!!.toString()
+        }
+        if (cafeParams.playground != null) {
+            mapToReturn["playground"] = cafeParams.playground!!.toString()
+        }
+        if (cafeParams.pageSize != null) {
+            mapToReturn["pageSize"] = cafeParams.pageSize!!.toString()
+        }
+        mapToReturn["seed"] = seed
+
+        return mapToReturn
     }
 
 
@@ -125,18 +169,18 @@ class CafeBarsViewModel @Inject constructor(
     val addCafeBarStatus: LiveData<Event<Resource<CafeBar>>> = _addCafeBarStatus
 
     fun addCafeBar(cafeBar: CafeBar) = viewModelScope.launch {
-        if (cafeBar._id.isEmpty()) {
+        if (cafeBar.id.isEmpty()) {
             _addCafeBarStatus.postValue(Event(Resource.error("Cafe bar id is not valid", null)))
             return@launch
         }
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic("/topics/${cafeBar._id}")
+            FirebaseMessaging.getInstance().subscribeToTopic("/topics/${cafeBar.id}")
             repository.insertCafeBar(cafeBar)
             _addCafeBarStatus.postValue(Event(Resource.success(cafeBar)))
-            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("Uspjesno spremljeno"))
+            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("Saved"))
         } catch (e: IOException) {
             _addCafeBarStatus.postValue(Event(Resource.error("Item has not been added", null)))
-            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("Dogodila se greska"))
+            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("An error occurred"))
         }
     }
 
@@ -144,17 +188,17 @@ class CafeBarsViewModel @Inject constructor(
     val removeCafeBarStatus: LiveData<Event<Resource<CafeBar>>> = _removeCafeBarStatus
 
     fun removeCafeBar(cafeBar: CafeBar) = viewModelScope.launch {
-        if (cafeBar._id.isEmpty()) {
+        if (cafeBar.id.isEmpty()) {
             _removeCafeBarStatus.postValue(Event(Resource.error("Cafe bar id is not valid", null)))
             return@launch
         }
         try {
             repository.deleteCafeBar(cafeBar)
-            FirebaseMessaging.getInstance().unsubscribeFromTopic("/topics/${cafeBar._id}")
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("/topics/${cafeBar.id}")
             _removeCafeBarStatus.postValue(Event(Resource.success(null)))
         } catch (e: IOException) {
             _removeCafeBarStatus.postValue(Event(Resource.error("Item has not been deleted", null)))
-            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("Dogodila se greska"))
+            cafeBarEventsChannel.send(CafeBarsEvents.ShowMessage("An error occurred"))
         }
     }
 
@@ -167,7 +211,7 @@ class CafeBarsViewModel @Inject constructor(
         if (cities.value.isNotEmpty()) {
             return@launch
         }
-        val loadedCities = repository.getAllCities() ?: mutableListOf()
+        val loadedCities = repository.getAllCities().data!!
         cities.value = loadedCities
         if (loadedCities.isEmpty()) {
             _loadCitiesStatus.postValue(Event(Resource.error("cities cant be empty", null)))
@@ -180,7 +224,7 @@ class CafeBarsViewModel @Inject constructor(
 
     val arrayOdDo = arrayOf("All", "From", "Until")
 
-    private var mSongType = "All"
+    private var mMusicType = "All"
     var mCanSmoke = false
     var mHasDart = false
     var mHasSlotMachine = false
@@ -229,7 +273,7 @@ class CafeBarsViewModel @Inject constructor(
     val isQueriedByBilliard: LiveData<Boolean> = _isQueriedByBilliard
 
     fun setFilerQuery(
-        songType: String,
+        musicType: String,
         fromUntil: String,
         time: String,
         canSmoke: Boolean,
@@ -237,91 +281,72 @@ class CafeBarsViewModel @Inject constructor(
         hasSlotMachine: Boolean,
         hasBilliard: Boolean,
         cityPosition: Int,
-        kvartPosition: Int,
+        areaPosition: Int,
         age: String,
         capacity: String
     ) = viewModelScope.launch {
         try {
-            mSongType = songType
+            mMusicType = musicType
             mCanSmoke = canSmoke
             mHasDart = hasDart
             mHasSlotMachine = hasSlotMachine
             mHasBilliard = hasBilliard
 
-            val matchDocuments = mutableListOf<Document>()
+            val newCafeParams = CafeParams()
 
-            if (kvartPosition != -1 && kvartPosition != 0 && cityPosition != 0) {
+            if (areaPosition != -1 && areaPosition != 0 && cityPosition != 0) {
                 _isQueriedByArea.postValue(true)
-                val areaId = areas[kvartPosition - 1]._id
-                matchDocuments.add(Document("\$match", Document("areaId", areaId)))
+                val areaId = areas[areaPosition - 1].id
+                newCafeParams.areaId = areaId
             } else _isQueriedByArea.postValue(false)
-            if (cityPosition != 0 && (kvartPosition == 0 || kvartPosition == -1)) {
+            if (cityPosition != 0 && (areaPosition == 0 || areaPosition == -1)) {
                 _isQueriedByCity.postValue(true)
-                val cityId = cities.value[cityPosition - 1]._id
-                matchDocuments.add(Document("\$match", Document("cityId", cityId)))
+                val cityId = cities.value[cityPosition - 1].id
+                newCafeParams.cityId = cityId
             } else _isQueriedByCity.postValue(false)
             if (fromUntil != "All" && time != "All") {
-                val workingHours = getWorkingHours(fromUntil, time)
-                if (workingHours != mutableListOf(-1)) {
-                    _isQueriedByWorkingTime.postValue(true)
-                    if (fromUntil == "Od") {
-                        matchDocuments.add(
-                            Document(
-                                "\$match",
-                                Document(
-                                    "startingWorkTime",
-                                    Document("\$in", workingHours)
-                                )
-                            )
-                        )
-                    } else {
-                        matchDocuments.add(
-                            Document(
-                                "\$match",
-                                Document(
-                                    "endingWorkTime",
-                                    Document("\$in", workingHours)
-                                )
-                            )
-                        )
-                    }
-                } else _isQueriedByWorkingTime.postValue(false)
+                _isQueriedByWorkingTime.postValue(true)
+                if (fromUntil == "From") {
+                    newCafeParams.startingWorkTime = transformHours(time)
+                    newCafeParams.endingWorkTime = null
+                } else {
+                    newCafeParams.endingWorkTime = transformHours(time)
+                    newCafeParams.startingWorkTime = null
+                }
             } else _isQueriedByWorkingTime.postValue(false)
             if (age != "All") {
                 _isQueriedByAge.postValue(true)
-                matchDocuments.add(Document("\$match", Document("age", age)))
+                newCafeParams.age = age
             } else _isQueriedByAge.postValue(false)
             if (capacity != "All") {
                 _isQueriedByPeopleCapacity.postValue(true)
-                matchDocuments.add(Document("\$match", Document("capacity", capacity)))
+                newCafeParams.capacity = capacity
             } else _isQueriedByPeopleCapacity.postValue(false)
-            if (songType != "All") {
+            if (musicType != "All") {
                 _isQueriedByMusic.postValue(true)
-                matchDocuments.add(Document("\$match", Document("music", songType)))
+                newCafeParams.music = musicType
             } else _isQueriedByMusic.postValue(false)
             if (canSmoke) {
                 _isQueriedBySmoking.postValue(true)
-                matchDocuments.add(Document("\$match", Document("smoking", true)))
+                newCafeParams.smoking = true
             } else _isQueriedBySmoking.postValue(false)
             if (hasDart) {
                 _isQueriedByDart.postValue(true)
-                matchDocuments.add(Document("\$match", Document("dart", true)))
+                newCafeParams.dart = true
             } else _isQueriedByDart.postValue(false)
             if (hasSlotMachine) {
                 _isQueriedBySlotMachine.postValue(true)
-                matchDocuments.add(Document("\$match", Document("betting", true)))
+                newCafeParams.betting = true
             } else _isQueriedBySlotMachine.postValue(false)
             if (hasBilliard) {
                 _isQueriedByBilliard.postValue(true)
-                matchDocuments.add(Document("\$match", Document("billiards", true)))
+                newCafeParams.billiards = true
             } else _isQueriedByBilliard.postValue(false)
             _setFilterQueryStatus.postValue(Event(Resource.success(null)))
 
-            matchQueriesLiveData.postValue(matchDocuments)
-
+            cafeParamsLiveData.postValue(newCafeParams)
 
         } catch (e: Exception) {
-            Log.d(TAG, e.message.toString())
             _setFilterQueryStatus.postValue(Event(Resource.error("${e.message}", null)))
         }
     }
@@ -333,56 +358,18 @@ class CafeBarsViewModel @Inject constructor(
 
     fun loadAreas(cityPosition: Int) = viewModelScope.launch {
         try {
-            val cityId = cities.value[cityPosition - 1]._id
-            areas = repository.getAreasByCityId(cityId)?.toList() ?: emptyList()
+            val cityId = cities.value[cityPosition - 1].id
+            areas = repository.getAreasByCityId(cityId).data ?: emptyList()
             _loadAreasStatus.postValue(Event(Resource.success(areas)))
-            val _areas = mutableListOf("All")
-            _areas.addAll(areas.map { it.name })
-            cafeBarEventsChannel.send(CafeBarsEvents.SetKvartoviAdapter(_areas))
+            val mAreas = mutableListOf("All")
+            mAreas.addAll(areas.map { it.name })
+            cafeBarEventsChannel.send(CafeBarsEvents.SetAreasAdapter(mAreas))
         } catch (e: Exception) {
             _loadAreasStatus.postValue(Event(Resource.error("An error occurred", null)))
         }
     }
 
-    fun getWorkingHours(fromUntil: String, time: String): MutableList<Int> {
-        val workingHours = mutableListOf<Int>()
-        if (fromUntil == "Od") {
-            val timeInt = transformHours(time)
-            if (timeInt < 10) {
-                for (hour in 0..timeInt) {
-                    workingHours.add(hour)
-                }
-            }
-        } else {
-            val timeInt = transformHours(time)
-            //ako je time veci od 4 a manji od 19 onda izbaci sve kafice
-            if (timeInt < 8 || timeInt > 19) {
-                //ako je time manji od 8 onda izbaci kafice koji rade od time do 4
-                if (timeInt < 8) {
-                    for (hour in timeInt..8) {
-                        workingHours.add(hour)
-                    }
-
-                } else if (timeInt > 19) {
-                    //ako je time veci od 19 izbaci sve koji rade od 19 do 23 i od 0 do 4
-                    for (hour in timeInt..23) {
-                        workingHours.add(hour)
-                    }
-                    for (hour in 0..4) {
-                        workingHours.add(hour)
-                    }
-                }
-            }
-        }
-        return if (workingHours.isNotEmpty()) {
-            workingHours
-        } else {
-            mutableListOf(-1)
-        }
-    }
-
     fun transformHours(time: String) = time.substring(0, 2).toInt()
-
 
     fun getHours(): MutableList<String> {
         val hours = mutableListOf("All")
@@ -396,7 +383,7 @@ class CafeBarsViewModel @Inject constructor(
     val onCafeBarClickStatus: LiveData<Event<Resource<CafeBar>>> = _onCafeBarClickStatus
 
     fun onCafeBarClick(cafeBar: CafeBar) = viewModelScope.launch {
-        if (cafeBar._id.isEmpty()) {
+        if (cafeBar.id.isEmpty()) {
             _onCafeBarClickStatus.postValue(Event(Resource.error("Invalid id", null)))
             return@launch
         }
@@ -407,8 +394,7 @@ class CafeBarsViewModel @Inject constructor(
 
     sealed class CafeBarsEvents {
         data class ShowMessage(val message: String) : CafeBarsEvents()
-        data class SetKvartoviAdapter(val kvartovi: List<String>) : CafeBarsEvents()
+        data class SetAreasAdapter(val areas: List<String>) : CafeBarsEvents()
         data class NavigateToCafeBarFragment(val cafeBar: CafeBar) : CafeBarsEvents()
     }
-
 }

@@ -10,8 +10,6 @@ import androidx.lifecycle.LiveData
 
 class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
-    private val TAG = "ConnectionLiveData"
-
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
     private val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
     private val validNetworks: MutableSet<Network> = HashSet()

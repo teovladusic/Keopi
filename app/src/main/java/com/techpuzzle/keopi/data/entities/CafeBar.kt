@@ -9,10 +9,9 @@ import androidx.room.PrimaryKey
 data class CafeBar(
 
     @PrimaryKey(autoGenerate = false)
-    val _id: String = "",
+    val id: String = "",
     val address: String = "",
     val bio: String = "",
-    val cjenikId: String = "",
     val name: String = "",
     val capacity: String = "",
     val betting: Boolean = false,
@@ -41,7 +40,6 @@ data class CafeBar(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
-        parcel.readString().toString(),
         parcel.readByte() != 0.toByte(),
         parcel.readString().toString(),
         parcel.readString().toString(),
@@ -64,10 +62,9 @@ data class CafeBar(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(_id)
+        parcel.writeString(id)
         parcel.writeString(address)
         parcel.writeString(bio)
-        parcel.writeString(cjenikId)
         parcel.writeString(name)
         parcel.writeString(capacity)
         parcel.writeByte(if (betting) 1 else 0)

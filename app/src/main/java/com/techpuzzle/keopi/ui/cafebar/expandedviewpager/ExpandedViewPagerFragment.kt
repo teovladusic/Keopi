@@ -1,11 +1,9 @@
 package com.techpuzzle.keopi.ui.cafebar.expandedviewpager
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -15,13 +13,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.techpuzzle.keopi.R
 import com.techpuzzle.keopi.databinding.FragmentExpandedViewPagerBinding
 import com.techpuzzle.keopi.ui.cafebar.CafeBarImagePagerAdapter
-import com.techpuzzle.keopi.ui.cafebar.CafeBarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ExpandedViewPagerFragment : Fragment(R.layout.fragment_expanded_view_pager) {
-
-    private val TAG = "ExpandedViewPagerFragment"
 
     private var _binding: FragmentExpandedViewPagerBinding? = null
     private val binding get() = _binding!!
@@ -93,7 +88,6 @@ class ExpandedViewPagerFragment : Fragment(R.layout.fragment_expanded_view_pager
 
 
     override fun onDestroyView() {
-        //binding.root.setBackgroundResource(R.color.white)
         _binding = null
         super.onDestroyView()
     }

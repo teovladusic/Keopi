@@ -254,7 +254,7 @@
             app:layout_constraintTop_toBottomOf="@id/calendar_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Za odabrani dan nema dogadaja"
+            android:text="There are no events for selected day."
             android:layout_marginTop="25dp"
             android:textColor="@color/gray_text"
             android:fontFamily="@font/raleway_semibold"

@@ -49,7 +49,7 @@ class CafeBarsViewModelTest {
 
     @Test
     fun addCafeBarReturnsSuccess() {
-        val caffeBar = CafeBar(_id = "valid_id")
+        val caffeBar = CafeBar(id = "valid_id")
         viewModel.addCafeBar(caffeBar)
         val value = viewModel.addCafeBarStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
@@ -65,7 +65,7 @@ class CafeBarsViewModelTest {
 
     @Test
     fun removeCafeBarReturnsSuccess() {
-        val caffeBar = CafeBar(_id = "valid_id")
+        val caffeBar = CafeBar(id = "valid_id")
         viewModel.addCafeBar(caffeBar)
         viewModel.removeCafeBar(caffeBar)
         val value = viewModel.removeCafeBarStatus.getOrAwaitValue()
@@ -83,7 +83,7 @@ class CafeBarsViewModelTest {
 
     @Test
     fun addRemoveCafeBarShouldAddReturnsSuccess() {
-        val caffeBar = CafeBar(_id = "valid_id")
+        val caffeBar = CafeBar(id = "valid_id")
         viewModel.onAddRemoveBarClick(CafeBarsFragment.HostingFragments.FirestoreCafeBars, caffeBar)
         val value = viewModel.addCafeBarStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
@@ -99,7 +99,7 @@ class CafeBarsViewModelTest {
 
     @Test
     fun addRemoveCafeBarShouldRemoveReturnsSuccess() {
-        val caffeBar = CafeBar(_id = "valid_id")
+        val caffeBar = CafeBar(id = "valid_id")
         viewModel.addCafeBar(caffeBar)
         viewModel.onAddRemoveBarClick(CafeBarsFragment.HostingFragments.CachedCafeBars, caffeBar)
         val value = viewModel.removeCafeBarStatus.getOrAwaitValue()
@@ -531,7 +531,7 @@ class CafeBarsViewModelTest {
 
     @Test
     fun onCafeBarClickWithValidIdReturnsSuccess() {
-        val caffeBar = CafeBar(_id = "valid_id")
+        val caffeBar = CafeBar(id = "valid_id")
         viewModel.onCafeBarClick(caffeBar)
         val value = viewModel.onCafeBarClickStatus.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)

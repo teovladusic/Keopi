@@ -34,7 +34,7 @@ class CafeBarViewModelTest {
             bio = "Mos slusat misu",
             cjenikId = "vpwCzBBjGsKXEcQIzRn0",
             cityId = "i1HArtxiMAT11rchC74Y",
-            _id = "3M6XwZ6rOrLDCnw3KZUb",
+            id = "3M6XwZ6rOrLDCnw3KZUb",
             name = "Faraon",
             capacity = "< 50",
             betting = true,

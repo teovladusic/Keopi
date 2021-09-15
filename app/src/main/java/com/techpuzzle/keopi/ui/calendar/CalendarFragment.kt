@@ -4,12 +4,12 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -25,12 +25,18 @@ import com.kizitonwose.calendarview.ui.MonthScrollListener
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import com.techpuzzle.keopi.R
-import com.techpuzzle.keopi.databinding.*
+import com.techpuzzle.keopi.databinding.CalendarDayLayoutBinding
+import com.techpuzzle.keopi.databinding.CalendarMonthHeaderLayoutBinding
+import com.techpuzzle.keopi.databinding.DialogEventBinding
+import com.techpuzzle.keopi.databinding.FragmentCalendarBinding
 import com.techpuzzle.keopi.utils.connection.ConnectivityManager
 import com.techpuzzle.keopi.utils.exhaustive
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -115,7 +121,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
 
 
         viewModel.eventsTombolaLiveData.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty() && it[0].event._id.isNotEmpty()) {
+            if (it.isNotEmpty() && it[0].event.id.isNotEmpty()) {
                 binding.recViewTombola.visibility = View.VISIBLE
                 binding.tvTombula.visibility = View.VISIBLE
                 binding.tvNoEvents.visibility = View.GONE
@@ -132,7 +138,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
         }
 
         viewModel.eventsConcertsLiveData.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty() && it[0].event._id.isNotEmpty()) {
+            if (it.isNotEmpty() && it[0].event.id.isNotEmpty()) {
                 binding.recViewConcert.visibility = View.VISIBLE
                 binding.tvConcert.visibility = View.VISIBLE
                 binding.tvNoEvents.visibility = View.GONE
@@ -149,7 +155,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
         }
 
         viewModel.eventsPartiesLiveData.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty() && it[0].event._id.isNotEmpty()) {
+            if (it.isNotEmpty() && it[0].event.id.isNotEmpty()) {
                 binding.recViewParty.visibility = View.VISIBLE
                 binding.tvParty.visibility = View.VISIBLE
                 binding.tvNoEvents.visibility = View.GONE
@@ -222,7 +228,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
     private fun populateDialog(eventWithCafeBar: CalendarViewModel.EventWithCafeBar) {
         dialogEventBinding.apply {
             tvCafeName.text = eventWithCafeBar.cafeBar.name
-            tvEventTime.text = eventWithCafeBar.event.time
+            tvEventTime.text = eventWithCafeBar.event.date.takeLast(2)
             tvMoney.text = eventWithCafeBar.event.price
             if (eventWithCafeBar.event.type == 0) {
                 imgMicrophone.visibility = View.VISIBLE
@@ -290,7 +296,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
                 }
             }
         }
-
     }
 
     private fun setupCalendar(eventDates: List<String>) {
@@ -309,17 +314,28 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
 
             init {
                 calendarDayLayoutBinding.root.setOnClickListener {
-                    val currentSelection = viewModel.selectedDateStringLiveData.value
-                    viewModel.selectedDateStringLiveData.postValue(day.date)
-                    viewModel.onDaySelected(day.date)
-                    binding.calendarView.smoothScrollToMonth(day.date.yearMonth)
+                    val currentSelection = viewModel.selectedDate
+
+                    if (currentSelection == day.date) {
+                        return@setOnClickListener
+                    }
+
+                    viewModel.selectedDate = day.date
                     // Reload the newly selected date so the dayBinder is
                     // called and we can ADD the selection background.
                     binding.calendarView.notifyDateChanged(day.date)
-                    if (currentSelection != null) {
-                        // We need to also reload the previously selected
-                        // date so we can REMOVE the selection background.
-                        binding.calendarView.notifyDateChanged(currentSelection)
+
+                    // We need to also reload the previously selected
+                    // date so we can REMOVE the selection background.
+                    binding.calendarView.notifyDateChanged(currentSelection)
+
+                    if (day.owner != DayOwner.THIS_MONTH) {
+                        binding.calendarView.smoothScrollToMonth(day.date.yearMonth)
+                    }
+
+                    //load events
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.onDaySelected(day.date)
                     }
                 }
             }
@@ -330,25 +346,30 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
         }
 
         binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
+
             override fun bind(container: DayViewContainer, day: CalendarDay) {
                 container.day = day
                 container.tvDay.text = day.date.dayOfMonth.toString()
 
-                for (eventDate in eventDates) {
-                    val dayInt = eventDate.substring(0, 2).toInt()
-                    val month = eventDate.substring(3, 5).toInt()
-                    val year = eventDate.substring(6, 10).toInt()
-
-                    if (day.day == dayInt && day.date.monthValue == month && day.date.year == year) {
-                        container.imgViewEvent.visibility = View.VISIBLE
-                    }
+                //check if event is on that day
+                //and put dash below it
+                val yearInt = day.date.year
+                val monthInt = day.date.monthValue
+                val dayInt = day.day
+                val dayString = if (dayInt < 10) "0${dayInt}" else dayInt.toString()
+                val monthString = if (monthInt < 10) "0${monthInt}" else monthInt.toString()
+                val dateString = "$dayString.$monthString.$yearInt."
+                if (eventDates.contains(dateString)) {
+                    container.imgViewEvent.visibility = View.VISIBLE
                 }
 
-                if (day.date == viewModel.selectedDateStringLiveData.value && day.owner == DayOwner.THIS_MONTH) {
+                if (day.date == viewModel.selectedDate && day.owner == DayOwner.THIS_MONTH) {
+                    //set yellow background on selected date
                     container.root.setBackgroundResource(R.drawable.calendar_selected_day_background)
                     container.tvDay.setTextColor(Color.WHITE)
 
                 } else {
+                    //remove yellow background from last selected date
                     container.root.background = null
                     if (day.owner == DayOwner.THIS_MONTH) {
                         container.tvDay.setTextColor(
@@ -357,7 +378,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
                                 R.color.gray_text
                             )
                         )
-                        if (viewModel.selectedDateStringLiveData.value == day.date) {
+                        if (viewModel.selectedDate == day.date) {
                             container.tvDay.setTextColor(Color.BLACK)
                         }
                     } else {
@@ -369,7 +390,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
                         )
                     }
                 }
-
             }
 
             override fun create(view: View): DayViewContainer = DayViewContainer(view)
@@ -386,9 +406,8 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
                 override fun bind(container: MonthViewContainer, month: CalendarMonth) {
                     container.apply {
                         tvMonth.text =
-                            month.yearMonth.month.name.toLowerCase(Locale.ROOT).capitalize(
-                                Locale.ROOT
-                            )
+                            month.yearMonth.month.name.lowercase(Locale.ROOT)
+                                .replaceFirstChar { x -> x.uppercase() }
                         tvYear.text = month.year.toString()
                     }
                 }
@@ -409,16 +428,16 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
         binding.apply {
             tvMonthMinusTwo.text =
                 viewModel.currentMonthMinus2.month.name.substring(0, 3)
-                    .toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                    .lowercase(Locale.ROOT).replaceFirstChar { x -> x.uppercase() }
             tvMonthMinusOne.text =
                 viewModel.currentMonthMinus1.month.name.substring(0, 3)
-                    .toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                    .lowercase(Locale.ROOT).replaceFirstChar { x -> x.uppercase() }
             tvCurrentMonth.text = viewModel.currentMonth.month.name.substring(0, 3)
-                .toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                .lowercase(Locale.ROOT).replaceFirstChar { x -> x.uppercase() }
             tvMonthPlusOne.text = viewModel.currentMonthPlus1.month.name.substring(0, 3)
-                .toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                .lowercase(Locale.ROOT).replaceFirstChar { x -> x.uppercase() }
             tvMonthPlusTwo.text = viewModel.currentMonthPlus2.month.name.substring(0, 3)
-                .toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                .lowercase(Locale.ROOT).replaceFirstChar { x -> x.uppercase() }
 
             tvMonthMinusTwo.setOnClickListener {
                 calendarView.smoothScrollToMonth(viewModel.currentMonthMinus2)
@@ -444,6 +463,4 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), EventsAdapter.OnI
         _dialogEventBinding = null
         super.onDestroyView()
     }
-
-
 }

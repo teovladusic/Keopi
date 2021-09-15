@@ -39,6 +39,7 @@ class ConnectivityManager @Inject constructor(application: Application) {
     // observe this in ui
     val isNetworkAvailableLiveData = isNetworkAvailable.asLiveData()
 
+    @DelicateCoroutinesApi
     fun checkIfNetworkHasInternet() = GlobalScope.launch(Dispatchers.IO) {
         while (shouldCheckInternet) {
             ping()

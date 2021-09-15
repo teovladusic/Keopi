@@ -1,10 +1,9 @@
 package com.techpuzzle.keopi.ui.caffebars.allcafebars
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -17,7 +16,6 @@ import com.techpuzzle.keopi.databinding.FragmentAllCafeBarsBinding
 import com.techpuzzle.keopi.ui.caffebars.CafeBarsAdapter
 import com.techpuzzle.keopi.ui.caffebars.CafeBarsFragment
 import com.techpuzzle.keopi.ui.caffebars.CafeBarsViewModel
-import com.techpuzzle.keopi.utils.exhaustive
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 
@@ -69,9 +67,7 @@ class AllCafeBarsFragment : Fragment(R.layout.fragment_all_cafe_bars) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.cafeBarsFlow.collectLatest {
                 viewModel.lastCafeBars = it
-                it?.let {
-                    adapter.submitData(it)
-                }
+                adapter.submitData(it)
             }
         }
     }

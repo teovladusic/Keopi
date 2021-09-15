@@ -1,5 +1,6 @@
 package com.techpuzzle.keopi.ui.cafebar
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -27,8 +28,6 @@ import kotlinx.coroutines.flow.collectLatest
 @AndroidEntryPoint
 class CafeBarFragment : Fragment(R.layout.fragment_cafe_bar) {
 
-    private val TAG = "CafeBarFragment"
-
     private var _binding: FragmentCafeBarBinding? = null
     private val binding get() = _binding!!
 
@@ -51,10 +50,11 @@ class CafeBarFragment : Fragment(R.layout.fragment_cafe_bar) {
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCafeBarBinding.bind(view)
-        viewModel.loadImageUrls(viewModel.cafeBar._id)
+        viewModel.loadImageUrls(viewModel.cafeBar.id)
         setup()
 
 
@@ -180,6 +180,7 @@ class CafeBarFragment : Fragment(R.layout.fragment_cafe_bar) {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setup() {
         val cafeBar = viewModel.cafeBar
         binding.apply {

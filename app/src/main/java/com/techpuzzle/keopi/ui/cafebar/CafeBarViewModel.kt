@@ -18,11 +18,9 @@ class CafeBarViewModel @Inject constructor(
     private val repository: CafeBarRepository
 ) : ViewModel() {
 
-    private val TAG = "CafeBarViewModel"
-
     val cafeBar = state.get<CafeBar>("cafeBar")!!
 
-    val imageUrls = state.get<Array<String>>("imageUrls")?.toList() ?: emptyList()
+    private val imageUrls = state.get<Array<String>>("imageUrls")?.toList() ?: emptyList()
 
     var isStartPositionUsed = false
     val startPosition = state.get<Int>("position") ?: 0
@@ -38,7 +36,7 @@ class CafeBarViewModel @Inject constructor(
 
     fun loadImageUrls(cafeBarId: String) = viewModelScope.launch {
         val mImageUrls = if (imageUrls.isEmpty()) {
-            repository.getImageUrlsByCafeId(cafeBarId)
+            repository.getImageUrlsByCafeId(cafeBarId).data
         } else {
             imageUrls
         }
@@ -56,7 +54,7 @@ class CafeBarViewModel @Inject constructor(
     val insertCafeBarStatus: LiveData<Event<Resource<CafeBar>>> = _insertCafeBarStatus
 
     fun onAddClicked(cafeBar: CafeBar) = viewModelScope.launch {
-        if (cafeBar._id.isEmpty()) {
+        if (cafeBar.id.isEmpty()) {
             _insertCafeBarStatus.postValue(
                 Event(
                     Resource.error(

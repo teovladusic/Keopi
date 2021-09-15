@@ -4,21 +4,23 @@
     <string-array name="ages">
         <item>All</item>
         <item>&lt; 22</item>
-        <item>22 - 35</item>
+        <item>22 – 35</item>
         <item>&gt; 35</item>
     </string-array>
 
     <string-array name="table_capacity">
         <item>All</item>
         <item>&lt; 50</item>
-        <item>50 - 100</item>
+        <item>50 – 100</item>
         <item>&gt; 100</item>
     </string-array>
 
     <string-array name="pisme">
         <item>All</item>
-        <item>Narodne</item>
-        <item>Cajke</item>
+        <item>Pop</item>
+        <item>Turbofolk</item>
+        <item>Rock</item>
+        <item>Metal</item>
     </string-array>
 
     <string-array name="terrace">

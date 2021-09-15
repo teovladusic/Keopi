@@ -1,5 +1,6 @@
 package com.techpuzzle.keopi.ui.calendar
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -35,9 +36,10 @@ class EventsAdapter(
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(eventWithCafeBar: CalendarViewModel.EventWithCafeBar) {
             binding.tvCafeName.text = eventWithCafeBar.cafeBar.name
-            binding.tvTime.text = eventWithCafeBar.event.time
+            binding.tvTime.text = "${eventWithCafeBar.event.date.takeLast(2)}:00"
             binding.tvMoney.text = eventWithCafeBar.event.price
         }
     }

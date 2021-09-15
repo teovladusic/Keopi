@@ -14,9 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PromoCaffesAdapter(
+class PromoCafesAdapter(
     val listener: OnItemClickListener
-) : RecyclerView.Adapter<PromoCaffesAdapter.PromoCaffesViewHolder>() {
+) : RecyclerView.Adapter<PromoCafesAdapter.PromoCafesViewHolder>() {
 
     private val firebaseStorage = FirebaseStorage.getInstance()
 
@@ -24,14 +24,14 @@ class PromoCaffesAdapter(
 
     var cafes: List<CafeBar> = listOf(CafeBar(), CafeBar(), CafeBar())
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoCaffesViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoCafesViewHolder {
         context = parent.context
         val binding =
             PromoCafeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PromoCaffesViewHolder(binding)
+        return PromoCafesViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PromoCaffesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PromoCafesViewHolder, position: Int) {
         val cafe = cafes[position]
         holder.bind(cafe)
         holder.loadImage(cafe)
@@ -39,7 +39,7 @@ class PromoCaffesAdapter(
 
     override fun getItemCount() = cafes.size
 
-    inner class PromoCaffesViewHolder(
+    inner class PromoCafesViewHolder(
         private val binding: PromoCafeItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {

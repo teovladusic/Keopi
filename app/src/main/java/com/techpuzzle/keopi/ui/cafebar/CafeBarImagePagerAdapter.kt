@@ -1,11 +1,13 @@
 package com.techpuzzle.keopi.ui.cafebar
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.firebase.storage.FirebaseStorage
 import com.techpuzzle.keopi.R
 import com.techpuzzle.keopi.databinding.CafeBarImagePagerItemBinding
@@ -66,10 +68,18 @@ class CafeBarImagePagerAdapter(
 
                 GlideApp.with(context)
                     .load(storageReference)
+                    .apply(RequestOptions()
+                        .fitCenter()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .override(Target.SIZE_ORIGINAL))
                     .into(binding.imgView)
 
                 GlideApp.with(context)
                     .load(storageReference)
+                    .apply(RequestOptions()
+                        .fitCenter()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .override(Target.SIZE_ORIGINAL))
                     .into(binding.photoView)
             }
         }

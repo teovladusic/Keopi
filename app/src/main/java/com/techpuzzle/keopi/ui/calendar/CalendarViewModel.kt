@@ -30,7 +30,7 @@ class CalendarViewModel @Inject constructor(
     private val calendarEventsChannel = Channel<CalendarEvents>()
     val calendarEvents = calendarEventsChannel.receiveAsFlow()
 
-    val selectedDateStringLiveData = state.getLiveData("selectedDate", LocalDate.now())
+    var selectedDate = state.get<LocalDate>("selectedDate") ?: LocalDate.now()
 
     val daysOfWeek = arrayOf(
         DayOfWeek.MONDAY,
@@ -67,15 +67,17 @@ class CalendarViewModel @Inject constructor(
 
 
     fun loadEvents() = viewModelScope.launch(Dispatchers.IO) {
+        val month = LocalDate.now().monthValue
+        val year = LocalDate.now().year
         if (allEventsWithCafeBars.isEmpty()) {
             calendarEventsChannel.send(CalendarEvents.Loading)
             eventDates.value = if (cafeBar == null) {
-                repository.getEventDates()
+                repository.getEventDates(year = year, month = month)
             } else {
-                repository.getEventDates(cafeBar._id)
+                repository.getEventDates(cafeBar.id, year = year, month = month)
             } ?: emptyList()
             calendarEventsChannel.send(CalendarEvents.Loaded)
-            onDaySelected(selectedDateStringLiveData.value!!)
+            onDaySelected(selectedDate)
         } else {
             calendarEventsChannel.send(CalendarEvents.Loaded)
         }
@@ -88,12 +90,12 @@ class CalendarViewModel @Inject constructor(
         val eventsOnDate = if (cafeBar == null) {
             repository.getEventsForDate(localDateString)
         } else {
-            repository.getEventsForDate(localDateString, cafeBar._id)
+            repository.getEventsForDate(localDateString, cafeBar.id)
         } ?: emptyList()
 
         val cafeIds = eventsOnDate.map { it.cafeBarId }.distinct().toList()
+        Log.d("njfdjkgf", "$eventsOnDate")
         val cafeBars = repository.getCafesById(cafeIds) ?: emptyList()
-
 
         val concerts = async { setupEvents(0, eventsOnDate, cafeBars) }
         val tombola = async { setupEvents(1, eventsOnDate, cafeBars) }
@@ -119,7 +121,7 @@ class CalendarViewModel @Inject constructor(
                 eventsWithCafeBars.add(
                     EventWithCafeBar(
                         event = event,
-                        cafeBar = cafeBars.filter { it._id == event.cafeBarId }[0]
+                        cafeBar = cafeBars.filter { it.id == event.cafeBarId }[0]
                     )
                 )
             }

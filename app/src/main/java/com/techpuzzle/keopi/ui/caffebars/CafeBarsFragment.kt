@@ -1,8 +1,8 @@
 package com.techpuzzle.keopi.ui.caffebars
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -16,16 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.techpuzzle.keopi.R
 import com.techpuzzle.keopi.data.entities.CafeBar
 import com.techpuzzle.keopi.databinding.DialogFilterBinding
 import com.techpuzzle.keopi.databinding.FragmentCafebarsBinding
-import com.techpuzzle.keopi.keopiApp
-import com.techpuzzle.keopi.ui.caffebars.cachedcafebars.CachedCafeBarsFragment
 import com.techpuzzle.keopi.ui.caffebars.allcafebars.AllCafeBarsFragment
-import com.techpuzzle.keopi.ui.caffebars.promocafebars.PromoCaffesAdapter
+import com.techpuzzle.keopi.ui.caffebars.cachedcafebars.CachedCafeBarsFragment
+import com.techpuzzle.keopi.ui.caffebars.promocafebars.PromoCafesAdapter
 import com.techpuzzle.keopi.utils.Permissions
 import com.techpuzzle.keopi.utils.connection.ConnectivityManager
 import com.techpuzzle.keopi.utils.exhaustive
@@ -33,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import org.bson.Document
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
@@ -58,6 +55,7 @@ class CafeBarsFragment : Fragment(R.layout.fragment_cafebars), SearchView.OnQuer
     private var hasInternetConnection = true
 
     @ExperimentalCoroutinesApi
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCafebarsBinding.bind(view)
@@ -95,7 +93,7 @@ class CafeBarsFragment : Fragment(R.layout.fragment_cafebars), SearchView.OnQuer
             }
         }.attach()
 
-        val listener = object : PromoCaffesAdapter.OnItemClickListener {
+        val listener = object : PromoCafesAdapter.OnItemClickListener {
             override fun onAddCaffeBarClick(cafeBar: CafeBar) {
                 viewModel.addCafeBar(cafeBar)
             }
@@ -105,7 +103,7 @@ class CafeBarsFragment : Fragment(R.layout.fragment_cafebars), SearchView.OnQuer
             }
         }
 
-        val promoCafesAdapter = PromoCaffesAdapter(listener)
+        val promoCafesAdapter = PromoCafesAdapter(listener)
         binding.recViewPromoCaffes.apply {
             adapter = promoCafesAdapter
             layoutManager =
@@ -129,6 +127,7 @@ class CafeBarsFragment : Fragment(R.layout.fragment_cafebars), SearchView.OnQuer
 
         binding.apply {
             searchViewCaffeBars.setOnQueryTextListener(this@CafeBarsFragment)
+            searchViewCaffeBars.setQuery(viewModel.searchQueryLiveData.value, false)
 
             cardViewFilter.setOnClickListener {
                 viewModel.bottomSheetState = BottomSheetBehavior.STATE_EXPANDED
@@ -299,11 +298,11 @@ class CafeBarsFragment : Fragment(R.layout.fragment_cafebars), SearchView.OnQuer
                     is CafeBarsViewModel.CafeBarsEvents.ShowMessage -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT).show()
                     }
-                    is CafeBarsViewModel.CafeBarsEvents.SetKvartoviAdapter -> {
+                    is CafeBarsViewModel.CafeBarsEvents.SetAreasAdapter -> {
                         val adapter = ArrayAdapter(
                             requireContext(),
                             android.R.layout.simple_spinner_dropdown_item,
-                            event.kvartovi
+                            event.areas
                         )
                         dialogFilterBinding.spinnerKvart.adapter = adapter
                         dialogFilterBinding.spinnerKvart.setSelection(viewModel.spinnerAreaPosition)

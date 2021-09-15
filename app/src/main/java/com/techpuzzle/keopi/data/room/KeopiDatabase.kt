@@ -6,7 +6,7 @@ import com.techpuzzle.keopi.data.entities.CafeBar
 
 @Database(
     entities = [CafeBar::class],
-    version = 10
+    version = 1
 )
 abstract class KeopiDatabase : RoomDatabase() {
     abstract fun getDao() : KeopiDao

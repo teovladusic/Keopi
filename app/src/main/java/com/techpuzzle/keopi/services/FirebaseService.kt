@@ -23,10 +23,10 @@ import kotlin.random.Random
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class FirebaseService : FirebaseMessagingService() {
 
-
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        Log.d("TAG", "onMessageReceived: ")
         val intent = Intent(this, MainActivity::class.java).also {
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             message.data.apply {
@@ -75,7 +75,7 @@ class FirebaseService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
-        Log.d("FirebaseMessagingServic", message.data.toString())
+        Log.d("TAG", "MESSAGE data ${message.data}")
 
         notificationManager.notify(notificationID, notification)
     }

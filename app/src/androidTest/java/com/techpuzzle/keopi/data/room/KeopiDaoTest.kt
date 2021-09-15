@@ -43,7 +43,7 @@ class KeopiDaoTest {
 
     @Test
     fun insertCafeBarTest() = runBlockingTest {
-        val cafeBar = CafeBar(name = "aa", _id = "1")
+        val cafeBar = CafeBar(name = "aa", id = "1")
         dao.insertCafeBar(cafeBar)
 
         val allCafeBars = dao.getCafeBarsFlow().getOrAwaitValue()
@@ -53,7 +53,7 @@ class KeopiDaoTest {
 
     @Test
     fun deleteCafeBarTest() = runBlockingTest {
-        val cafeBar = CafeBar(name = "aa", _id = "1")
+        val cafeBar = CafeBar(name = "aa", id = "1")
         dao.insertCafeBar(cafeBar)
 
         dao.deleteCafeBar(cafeBar)

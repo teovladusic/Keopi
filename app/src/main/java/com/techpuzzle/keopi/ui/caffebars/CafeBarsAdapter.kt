@@ -1,7 +1,7 @@
 package com.techpuzzle.keopi.ui.caffebars
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -64,6 +64,7 @@ class CafeBarsAdapter(
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(cafeBar: CafeBar) {
             CoroutineScope(Dispatchers.Main).launch {
                 val storageReference = storage.getReferenceFromUrl(cafeBar.picture)
@@ -103,7 +104,7 @@ class CafeBarsAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<CafeBar>() {
         override fun areItemsTheSame(oldItem: CafeBar, newItem: CafeBar) =
-            oldItem._id == newItem._id
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: CafeBar, newItem: CafeBar) = oldItem == newItem
     }

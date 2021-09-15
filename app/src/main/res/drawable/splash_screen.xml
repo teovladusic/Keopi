@@ -8,10 +8,5 @@
             android:src="@drawable/splash_screen_image"/>
     </item>
 
-    <item android:gravity="bottom">
-        <bitmap
-            android:src="@drawable/splash_screen_text"/>
-    </item>
-
 
 </layer-list>

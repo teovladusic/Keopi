@@ -2,11 +2,11 @@ package com.techpuzzle.keopi.di
 
 import android.app.Application
 import androidx.room.Room
-import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarApiRepository
 import com.techpuzzle.keopi.data.repositiories.cafebar.CafeBarRepository
-import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsApiRepository
 import com.techpuzzle.keopi.data.repositiories.cafebars.CafeBarsRepository
-import com.techpuzzle.keopi.data.repositiories.calendar.CalendarDefaultRepository
+import com.techpuzzle.keopi.data.repositiories.calendar.CalendarApiRepository
 import com.techpuzzle.keopi.data.repositiories.calendar.CalendarRepository
 import com.techpuzzle.keopi.data.room.KeopiDatabase
 import dagger.Module
@@ -34,15 +34,15 @@ object AppModule {
     @Provides
     fun provideCafeBarRepository(
         database: KeopiDatabase
-    ) = CafeBarDefaultRepository(database) as CafeBarRepository
+    ) = CafeBarApiRepository(database) as CafeBarRepository
 
     @Singleton
     @Provides
     fun provideCafeBarsRepository(
         database: KeopiDatabase
-    ) = CafeBarsDefaultRepository(database) as CafeBarsRepository
+    ) = CafeBarsApiRepository(database) as CafeBarsRepository
 
     @Singleton
     @Provides
-    fun provideCalendarRepository() = CalendarDefaultRepository() as CalendarRepository
+    fun provideCalendarRepository() = CalendarApiRepository() as CalendarRepository
 }

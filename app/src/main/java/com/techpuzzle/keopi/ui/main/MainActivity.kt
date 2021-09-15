@@ -9,15 +9,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.techpuzzle.keopi.R
 import com.techpuzzle.keopi.data.entities.CafeBar
 import com.techpuzzle.keopi.databinding.ActivityMainBinding
-import com.techpuzzle.keopi.keopiApp
 import com.techpuzzle.keopi.ui.caffebars.CafeBarsFragmentDirections
 import com.techpuzzle.keopi.utils.connection.ConnectivityManager
 import dagger.hilt.android.AndroidEntryPoint
-import io.realm.mongodb.Credentials
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var connectivityManager: ConnectivityManager
 
+    @DelicateCoroutinesApi
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +33,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val credentials = Credentials.anonymous()
-            keopiApp.login(credentials)
-        }
+        connectivityManager.checkIfNetworkHasInternet()
 
         navigateToCafeBarsFragmentIfNeeded(intent)
-
-        connectivityManager.checkIfNetworkHasInternet()
 
         connectivityManager.isNetworkAvailableLiveData.observe(this) {
             if (it) {
@@ -54,7 +46,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        if (intent != null) {
+            navigateToCafeBarsFragmentIfNeeded(intent)
+        }
+    }
+
+    private val TAG = "TAG"
     private fun navigateToCafeBarsFragmentIfNeeded(intent: Intent) {
+        Log.d(TAG, "intent etras ${intent.extras}")
         intent.extras?.let {
             val id = it.getString("_id", "empty")
             if (id != "empty") {
@@ -75,8 +77,6 @@ class MainActivity : AppCompatActivity() {
         intent.removeExtra("_id")
         intent.removeExtra("address")
         intent.removeExtra("bio")
-        intent.removeExtra("cjenikId")
-        intent.removeExtra("cjenikId")
         intent.removeExtra("name")
         intent.removeExtra("capacity")
         intent.removeExtra("betting")
@@ -102,10 +102,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getCafe(bundle: Bundle): CafeBar {
         return CafeBar(
-            _id = bundle.getString("_id", ""),
+            id = bundle.getString("_id", ""),
             address = bundle.getString("address", ""),
             bio = bundle.getString("bio", ""),
-            cjenikId = bundle.getString("cjenikId", ""),
             name = bundle.getString("name", ""),
             capacity = bundle.getString("capacity", ""),
             betting = bundle.getString("betting", "").toBoolean(),
